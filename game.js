@@ -1,17 +1,14 @@
 var canvas = document.createElement("canvas");
 document.body.insertAdjacentElement("beforeEnd", canvas);
 var twoDee = canvas.getContext("2d");
-twoDee.fillStyle = "blue";
+twoDee.fillStyle = "red";
 twoDee.fillRect(0,0,canvas.width,canvas.height);
 
 function draw(time) {
-//  var x1 = Math.floor(time) % (canvas.width);
 //  var y1 = Math.floor(time) % (canvas.height);
-//  console.log({time, x1});
+//  console.log({time, y1});
   twoDee.fillStyle = "white";
   twoDee.fillRect(0,0,canvas.width,canvas.height);
-//  twoDee.fillStyle = "pink";
-//  twoDee.fillRect(x1,y1,canvas.width/2,canvas.height/2);
   requestAnimationFrame(draw);
 }
 
@@ -20,6 +17,7 @@ var player = {
   velocity: 0
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 function checkKeyEvent(event) {
   const keyName = event.key;
 //  console.log({event.key, event});
