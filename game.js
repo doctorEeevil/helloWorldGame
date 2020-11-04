@@ -42,7 +42,6 @@ class Player {
   }
   draw() {
     this.updatePosition();
-    console.log(this.x, this.y);
     twoDee.fillStyle = "blue";
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, 10, 10, 0, 0, 6.28, 0);
@@ -83,25 +82,21 @@ function checkKeyEvent(event) {
   case "KeyW": // go north
     if (keyUpOrDown == 'keydown'){
       player.walk("N");
-      console.log("start running north");
     }
     break;
   case "KeyD": // go east
     if (keyUpOrDown == 'keydown'){
       player.walk("E");
-      console.log("start running east");
     }
     break;
   case "KeyS": // go south
     if (keyUpOrDown == 'keydown'){
       player.walk("S");
-      console.log("start running south");
     }
     break;
   case "KeyA": // go west
     if (keyUpOrDown == 'keydown'){
       player.walk("W");
-      console.log("start running west");
     }
     break;
   }
