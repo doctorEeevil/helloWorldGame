@@ -24,81 +24,74 @@ function draw(time) {
 }
 
 class Player {
-  constructor(x, y, vel) {
+  constructor(x=50, y=50, vx=0, vy=0) {
     this.x = x;
     this.y = y;
-    this.dir = false; // false or NESW
-    this.vel = vel;
+    this.vx = vx;
+    this.vy = vy;
+    this.frames=0;
+    this.lastTime = Date.now();
   }
-  walk(walkdir) {
-    if (!this.dir){
-      this.lastTime = Date.now();
+  walk(walkDir, walkOrStop) {
+    var walkOrStopInt = walkOrStop ? 1 : 0;
+    var vscale = 0.5 * walkOrStopInt; // pixels per millisecond
+    switch (walkDir) {
+    case "N":
+      this.vy = -1 * vscale;
+      break;
+    case "S":
+      this.vy = vscale;
+      break;
+    case "E":
+      this.vx = vscale;
+      break;
+    case "W":
+      this.vx = -1 * vscale;
+      break;
     }
-    this.dir = walkdir;
-    this.vel = 0.5; // pixels per milisecond
-  }
-  stop() {
-    this.dir = false;
+    var vx = this.vx;
+    var vy = this.vy;
+    //    console.log({walkDir, walkOrStop, vx, vy});
   }
   draw() {
     this.updatePosition();
+    //    console.log(this);
     twoDee.fillStyle = "blue";
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, 10, 10, 0, 0, 6.28, 0);
     twoDee.stroke();
+    this.frames++;
   }
   updatePosition() {
     var timeDelta = Date.now() - this.lastTime;
     this.lastTime = Date.now();
-    var spaceDelta = timeDelta * this.vel;
-    switch (this.dir) {
-    case "N":
-      this.y = this.y - spaceDelta;
-      break;
-    case "E":
-      this.x = this.x + spaceDelta;
-      break;
-    case "S":
-      this.y = this.y + spaceDelta;
-      break;
-    case "W":
-      this.x = this.x - spaceDelta;
-      break;
-    }
+    var dx = timeDelta * this.vx;
+    var dy = timeDelta * this.vy;
+    this.y = this.y + dy;
+    this.x = this.x + dx;
   }
 }
 
-var player = new Player(50, 50, 0);
+var player = new Player(50, 50, 0, 0);
 
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 function checkKeyEvent(event) {
   const keyName = event.key;
   //  console.log({event.key, event});
   var keyUpOrDown = event.type; // 'keydown' or 'keyup'
-  if (keyUpOrDown == 'keyup'){
-    player.stop();
-    return;
-  };
+  var walkOrStop = event.type == 'keydown';
   switch (event.code) {
   case "KeyW": // go north
-    if (keyUpOrDown == 'keydown'){
-      player.walk("N");
-    }
+    player.walk("N", walkOrStop);
     break;
   case "KeyD": // go east
-    if (keyUpOrDown == 'keydown'){
-      player.walk("E");
-    }
+    player.walk("E", walkOrStop);
     break;
   case "KeyS": // go south
-    if (keyUpOrDown == 'keydown'){
-      player.walk("S");
-    }
+    player.walk("S", walkOrStop);
     break;
   case "KeyA": // go west
-    if (keyUpOrDown == 'keydown'){
-      player.walk("W");
-    }
+    player.walk("W", walkOrStop);
     break;
   }
 }
