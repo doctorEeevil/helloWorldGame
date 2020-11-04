@@ -35,7 +35,7 @@ class Player {
       this.lastTime = Date.now();
     }
     this.dir = walkdir;
-    this.vel = 0.02; // pixels per milisecond
+    this.vel = 0.5; // pixels per milisecond
   }
   stop() {
     this.dir = false;
@@ -49,6 +49,7 @@ class Player {
   }
   updatePosition() {
     var timeDelta = Date.now() - this.lastTime;
+    this.lastTime = Date.now();
     var spaceDelta = timeDelta * this.vel;
     switch (this.dir) {
     case "N":
