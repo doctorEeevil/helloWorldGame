@@ -1,18 +1,18 @@
 function fitCanvasToWindow (){
   var width = window.innerWidth;
   var height = window.innerHeight;
-  canvas.width = width - 20; // why do we have to do this???? gross! maybe innerWidth and innerHeight aren't quite right? idk
-  canvas.height = height - 20;
+  canvas.width = width;
+  canvas.height = height;
 }
 var canvas = document.createElement("canvas");
 console.log(document.body);
 document.body.insertAdjacentElement("afterbegin", canvas);
+canvas.style = "position:absolute; top:0; left:0;";
 fitCanvasToWindow();
 window.onresize = fitCanvasToWindow;
 var twoDee = canvas.getContext("2d");
 twoDee.fillStyle = "red";
 twoDee.fillRect(0,0,canvas.width,canvas.height);
-
 
 function draw(time) {
 //  var y1 = Math.floor(time) % (canvas.height);
