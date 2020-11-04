@@ -1,8 +1,8 @@
 function fitCanvasToWindow (){
   var width = window.innerWidth;
   var height = window.innerHeight;
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = width - 20; // why do we have to do this???? gross! maybe innerWidth and innerHeight aren't quite right? idk
+  canvas.height = height - 20;
 }
 var canvas = document.createElement("canvas");
 console.log(document.body);
@@ -31,6 +31,7 @@ class Player {
     this.vy = vy;
     this.frames=0;
     this.lastTime = Date.now();
+    this.radius = 10;
   }
   walk(walkDir, walkOrStop) {
     var walkOrStopInt = walkOrStop ? 1 : 0;
@@ -58,7 +59,7 @@ class Player {
     //    console.log(this);
     twoDee.fillStyle = "blue";
     twoDee.beginPath();
-    twoDee.ellipse(this.x, this.y, 10, 10, 0, 0, 6.28, 0);
+    twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
     twoDee.stroke();
     this.frames++;
   }
@@ -67,8 +68,8 @@ class Player {
     this.lastTime = Date.now();
     var dx = timeDelta * this.vx;
     var dy = timeDelta * this.vy;
-    this.y = this.y + dy;
-    this.x = this.x + dx;
+    this.y = Math.max(Math.min(this.y + dy, canvas.height-this.radius), this.radius);
+    this.x = Math.max(Math.min(this.x + dx, canvas.width-this.radius), this.radius);
   }
 }
 
