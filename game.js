@@ -24,6 +24,7 @@ function tick(time) {
   entities.forEach((anEntity) => {
     anEntity.updatePosition();
     anEntity.draw();
+    console.log(anEntity);
   });
   requestAnimationFrame(tick);
 }
@@ -35,7 +36,6 @@ class Entity {
     this.vx = vx;
     this.vy = vy;
     this.lastTime = Date.now();
-    this.radius = 10;
   }
   updatePosition() {
     var timeDelta = Date.now() - this.lastTime;
@@ -48,6 +48,14 @@ class Entity {
 }
 
 class Player extends Entity {
+  constructor(...args) {
+    super(...args);
+    this.radius = 10;
+  }
+  shoot() {
+    var bullet = new Bullet(this.x, this.y, this.vx*1.25, this.vy*1.25);
+    entities.push(bullet);
+  }
   walk(walkDir, walkOrStop) {
     var walkOrStopInt = walkOrStop ? 1 : 0;
     var vscale = 0.5 * walkOrStopInt; // pixels per millisecond
@@ -74,7 +82,19 @@ class Player extends Entity {
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
     twoDee.stroke();
-    this.frames++;
+  }
+}
+
+class Bullet extends Entity {
+  constructor(...args) {
+    super(...args);
+    this.radius = 3;
+  }
+  draw() {
+    twoDee.fillStyle = "red";
+    twoDee.beginPath();
+    twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
+    twoDee.stroke();
   }
 }
 
@@ -84,7 +104,7 @@ entities.push(player);
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 function checkKeyEvent(event) {
   const keyName = event.key;
-  //  console.log({event.key, event});
+  // console.log({keyName, event}, event.code);
   var keyUpOrDown = event.type; // 'keydown' or 'keyup'
   var walkOrStop = event.type == 'keydown';
   switch (event.code) {
@@ -99,6 +119,9 @@ function checkKeyEvent(event) {
     break;
   case "KeyA": // go west
     player.walk("W", walkOrStop);
+    break;
+  case "Space":
+    player.shoot();
     break;
   }
 }
