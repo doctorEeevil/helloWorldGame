@@ -14,13 +14,17 @@ var twoDee = canvas.getContext("2d");
 twoDee.fillStyle = "red";
 twoDee.fillRect(0,0,canvas.width,canvas.height);
 
+var entities = [];
+
 function tick(time) {
 //  var y1 = Math.floor(time) % (canvas.height);
 //  console.log({time, y1});
   twoDee.fillStyle = "white";
   twoDee.fillRect(0,0,canvas.width,canvas.height);
-  player.updatePosition();
-  player.draw();
+  entities.forEach((anEntity) => {
+    anEntity.updatePosition();
+    anEntity.draw();
+  });
   requestAnimationFrame(tick);
 }
 
@@ -75,6 +79,7 @@ class Player extends Entity {
 }
 
 var player = new Player(50, 50, 0, 0);
+entities.push(player);
 
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 function checkKeyEvent(event) {
