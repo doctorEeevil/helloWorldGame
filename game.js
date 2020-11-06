@@ -24,7 +24,7 @@ function tick(time) {
   entities.forEach((anEntity) => {
     anEntity.updatePosition();
     anEntity.draw();
-    console.log(anEntity);
+    // console.log(anEntity);
   });
   requestAnimationFrame(tick);
 }
@@ -56,6 +56,13 @@ class Player extends Entity {
     var bullet = new Bullet(this.x, this.y, this.vx*1.25, this.vy*1.25);
     entities.push(bullet);
   }
+  shootTo(targetX, targetY){
+    var vectorX = targetX - this.x;
+    var vectorY = targetY - this.y;
+    var distance = Math.sqrt(((vectorX*vectorX)+(vectorY*vectorY)));
+    var bullet = new Bullet(this.x, this.y, vectorX/distance, vectorY/distance);
+    entities.push(bullet);
+  }
   walk(walkDir, walkOrStop) {
     var walkOrStopInt = walkOrStop ? 1 : 0;
     var vscale = 0.5 * walkOrStopInt; // pixels per millisecond
@@ -81,7 +88,7 @@ class Player extends Entity {
     twoDee.fillStyle = "blue";
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
-    twoDee.stroke();
+    twoDee.fill();
   }
 }
 
@@ -94,7 +101,7 @@ class Bullet extends Entity {
     twoDee.fillStyle = "red";
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
-    twoDee.stroke();
+    twoDee.fill();
   }
 }
 
@@ -125,6 +132,14 @@ function checkKeyEvent(event) {
     break;
   }
 }
+
+function handleClickEvent (event) {
+  var targetX = event.clientX;
+  var targetY = event.clientY;
+  player.shootTo(targetX, targetY);
+}
+
 document.addEventListener('keydown', checkKeyEvent);
 document.addEventListener('keyup', checkKeyEvent);
+canvas.onclick = handleClickEvent;
 requestAnimationFrame(tick);
