@@ -7,28 +7,28 @@ const httpServer = http.createServer(requestResponseHandler);
 httpServer.listen(3000, '127.0.0.1', () => {
   console.log("Node.JS static file server is listening on port 3000");
 });
-function requestResponseHandler(request, response) {
-  console.log(`Request came: ${request.url}`);
-  if (request.url === "/") {
-    sendResponse("index.html", "text/html", response);
+function requestResponseHandler(req, res) {
+  console.log(`Request came: ${req.url}`);
+  if (req.url === "/") {
+    sendResponse("index.html", "text/html", res);
   } else {
-    sendResponse(request.url, getContentType(request.url), response);
+    sendResponse(req.url, getContentType(req.url), res);
   }
 }
 
 function sendResponse(url, contentType, res) {
-  let file = path.join(__dirname, url);
-  fs.readFile(file, (err, content) => {
+  let filePath = path.join(__dirname, url);
+  fs.readFile(filePath, (err, content) => {
     if (err) {
       res.writeHead(404);
-      res.write(`File '${file}' Not Found!`);
+      res.write(`File '${filePath}' Not Found!`);
       res.end();
-      console.log("Response: 404 ${file}, err");
+      console.log("Response: 404 ${filePath}, err");
     } else {
       res.writeHead(200, { "Content-Type": contentType });
       res.write(content);
       res.end();
-      console.log(`Response: 200 ${file}`);
+      console.log(`Response: 200 ${filePath}`);
     }
   });
 }
@@ -47,20 +47,3 @@ function getContentType(url) {
       return "application/octate-stream";
   }
 }
-/*
-const http = require('http');
-
-const hostname = '127.0.0.1';
-const port = 3000;
-
-const server = http.createServer((req, res) => {
-  console.log(req);
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
-  res.end('<body><script src="game.js"></script></body>');
-});
-
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
-*/
