@@ -1,3 +1,3 @@
 # helloWorldGame
-this is an electron app
-you can run it with npm start
+this can be hosted to 127.0.0.1:3000 via npm start
+it's also runnable as an electron app with npm run client
