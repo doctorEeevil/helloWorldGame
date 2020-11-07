@@ -2,10 +2,11 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const PORT = process.env.PORT || 3000;
 
 const httpServer = http.createServer(requestResponseHandler);
-httpServer.listen(3000, '127.0.0.1', () => {
-  console.log("Node.JS static file server is listening on port 3000");
+httpServer.listen(PORT, '127.0.0.1', () => {
+  console.log(`Node.JS static file server is listening on port ${PORT}`);
 });
 function requestResponseHandler(req, res) {
   console.log(`Request came: ${req.url}`);
