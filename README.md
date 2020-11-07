@@ -1,2 +1,4 @@
 # helloWorldGame
-This can be hosted to 127.0.0.1:3000 via npm start. It's also runnable as an electron app with npm run client
+Start the server `npm start`, or an electron client with `npm run client`
+
+Or check https://castlecrunch.gig.gl
