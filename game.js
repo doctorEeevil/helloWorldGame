@@ -57,11 +57,13 @@ class Player extends Entity {
     entities.push(bullet);
   }
   shootTo(targetX, targetY){
+    var shootSound = document.getElementById("shootSound");
     var vectorX = targetX - this.x;
     var vectorY = targetY - this.y;
     var distance = Math.sqrt(((vectorX*vectorX)+(vectorY*vectorY)));
     var bullet = new Bullet(this.x, this.y, vectorX/distance, vectorY/distance);
     entities.push(bullet);
+    shootSound.play();
   }
   walk(walkDir, walkOrStop) {
     var walkOrStopInt = walkOrStop ? 1 : 0;
