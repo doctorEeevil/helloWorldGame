@@ -1,3 +1,5 @@
+var ws = new WebSocket(`ws://${document.location.host}`);
+ws.onmessage = console.log;
 function fitCanvasToWindow (){
   var width = window.innerWidth;
   var height = window.innerHeight;
@@ -57,6 +59,7 @@ class Player extends Entity {
     entities.push(bullet);
   }
   shootTo(targetX, targetY){
+    ws.send('shoot', 'hello');
     var shootSound = document.getElementById("shootSound");
     var vectorX = targetX - this.x;
     var vectorY = targetY - this.y;
@@ -145,3 +148,4 @@ document.addEventListener('keydown', checkKeyEvent);
 document.addEventListener('keyup', checkKeyEvent);
 canvas.onclick = handleClickEvent;
 requestAnimationFrame(tick);
+

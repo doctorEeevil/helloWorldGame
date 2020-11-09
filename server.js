@@ -2,10 +2,12 @@
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+
 import {GameServer} from './gameserver.js';
 const PORT = process.env.PORT || 3000;
 
 const httpServer = http.createServer(requestResponseHandler);
+const gameServer = new GameServer(httpServer);
 httpServer.listen(PORT, '127.0.0.1', () => {
   console.log(`Node.JS static file server is listening on port ${PORT}`);
 });
@@ -47,7 +49,10 @@ function getContentType(url) {
     return "application/json";
   case ".wav":
     return "audio/wav";
+  case ".ico":
+    return "image/x-icon";
   default:
     return "application/octate-stream";
   }
 }
+
