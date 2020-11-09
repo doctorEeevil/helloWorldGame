@@ -1,4 +1,4 @@
-var ws = new WebSocket(`ws://${document.location.host}`);
+var ws = new WebSocket(`wss://${document.location.host}`);
 ws.onmessage = console.log;
 function fitCanvasToWindow (){
   var width = window.innerWidth;
