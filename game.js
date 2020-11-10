@@ -1,4 +1,14 @@
-var ws = new WebSocket(`wss://${document.location.host}`);
+function makeWebSocket() {
+  var protocol;
+  if (document.location.protocol == 'https'){
+    protocol = 'wss';
+  } else {
+    protocol = 'ws';
+  }
+  return new WebSocket(protocol + '://' + document.location.host);
+}
+
+var ws = makeWebSocket();
 ws.onmessage = console.log;
 function fitCanvasToWindow (){
   var width = window.innerWidth;
