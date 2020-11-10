@@ -1,6 +1,6 @@
 function makeWebSocket() {
   var protocol;
-  if (document.location.protocol == 'https'){
+  if (document.location.protocol == 'https:'){
     protocol = 'wss';
   } else {
     protocol = 'ws';
