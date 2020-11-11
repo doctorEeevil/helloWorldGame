@@ -7,10 +7,19 @@ function makeWebSocket() {
   }
   return new WebSocket(protocol + '://' + document.location.host);
 }
-
 var ws = makeWebSocket();
-ws.onmessage = console.log;
-function fitCanvasToWindow (){
+function handleMessage(messageEvent) {
+  console.log(messageEvent);
+  var msg = JSON.parse(messageEvent.data);
+  switch (msg.type) {
+  case "playerStatus":
+    player.setPosition(msg.pos.x, msg.pos.y);
+    player.color = msg.color;
+    break;
+  }
+}
+ws.onmessage = handleMessage;
+function fitCanvasToWindow() {
   var width = window.innerWidth;
   var height = window.innerHeight;
   canvas.width = width;
@@ -57,12 +66,17 @@ class Entity {
     this.y = Math.max(Math.min(this.y + dy, canvas.height-this.radius), this.radius);
     this.x = Math.max(Math.min(this.x + dx, canvas.width-this.radius), this.radius);
   }
+  setPosition(x, y) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
 class Player extends Entity {
   constructor(...args) {
     super(...args);
     this.radius = 10;
+    this.color = "red";
   }
   shoot() {
     var bullet = new Bullet(this.x, this.y, this.vx*1.25, this.vy*1.25);
@@ -100,7 +114,7 @@ class Player extends Entity {
     //    console.log({walkDir, walkOrStop, vx, vy});
   }
   draw() {
-    twoDee.fillStyle = "blue";
+    twoDee.fillStyle = this.color;
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
     twoDee.fill();
