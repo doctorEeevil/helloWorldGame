@@ -4,7 +4,6 @@ class Player {
   constructor(ws, gameServer) {
     this.ws = ws;
     this.gameServer = gameServer;
-    this.gameServer.toEverybody('hello');
     this.pos = gameServer.getRandomPos();
     this.color = gameServer.getRandomPlayerColor();
   }

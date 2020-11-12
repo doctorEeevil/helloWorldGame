@@ -83,7 +83,6 @@ class Player extends Entity {
     entities.push(bullet);
   }
   shootTo(targetX, targetY){
-    ws.send('shoot', 'hello');
     var shootSound = document.getElementById("shootSound");
     var vectorX = targetX - this.x;
     var vectorY = targetY - this.y;
