@@ -6,12 +6,17 @@ class Player {
     this.gameServer = gameServer;
     this.pos = gameServer.getRandomPos();
     this.color = gameServer.getRandomPlayerColor();
+    this.id = this.makePlayerID();
   }
   sendStatus() {
     var statusJSON = JSON.stringify({"pos": this.pos,
 				     "color": this.color,
-				     "type": "playerStatus"});
+				     "type": "playerStatus",
+				     "id": this.id});
     this.ws.send(statusJSON);
+  }
+  makePlayerID() {
+    return Date.now();
   }
 }
 
@@ -25,6 +30,7 @@ class GameServer {
   connection(ws) {
     var player = this.createPlayer(ws);
     player.sendStatus();
+    
   }
   toEverybody(data) {
     this.players.forEach(function each(player) {
