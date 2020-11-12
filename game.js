@@ -12,9 +12,23 @@ function handleMessage(messageEvent) {
   console.log(messageEvent);
   var msg = JSON.parse(messageEvent.data);
   switch (msg.type) {
+  case "initPlayer":
+    localPlayer.setPosition(msg.pos.x, msg.pos.y);
+    localPlayer.color = msg.color;
+    var oldID = localPlayer.id;
+    delete entities[oldID];
+    localPlayer.id = msg.id;
+    entities[localPlayer.id] = localPlayer;
+    break;
   case "playerStatus":
-    player.setPosition(msg.pos.x, msg.pos.y);
-    player.color = msg.color;
+    if (localPlayer.id != msg.id) {
+      var aPlayer = entities[msg.id];
+      if (!aPlayer) {
+	aPlayer = new Player(msg.pos.x, msg.pos.y);
+	aPlayer.id = msg.id;
+	entities[aPlayer.id] = aPlayer;
+      }
+    }
     break;
   }
 }
@@ -35,18 +49,18 @@ var twoDee = canvas.getContext("2d");
 twoDee.fillStyle = "red";
 twoDee.fillRect(0,0,canvas.width,canvas.height);
 
-var entities = [];
+var entities = {};
 
 function tick(time) {
 //  var y1 = Math.floor(time) % (canvas.height);
 //  console.log({time, y1});
   twoDee.fillStyle = "white";
   twoDee.fillRect(0,0,canvas.width,canvas.height);
-  entities.forEach((anEntity) => {
+  for (const entityID in entities) {
+    var anEntity = entities[entityID];
     anEntity.updatePosition();
     anEntity.draw();
-    // console.log(anEntity);
-  });
+  }
   requestAnimationFrame(tick);
 }
 
@@ -57,6 +71,7 @@ class Entity {
     this.vx = vx;
     this.vy = vy;
     this.lastTime = Date.now();
+    this.id = this.lastTime;
   }
   updatePosition() {
     var timeDelta = Date.now() - this.lastTime;
@@ -77,10 +92,11 @@ class Player extends Entity {
     super(...args);
     this.radius = 10;
     this.color = "red";
+    this.id = null;
   }
   shoot() {
     var bullet = new Bullet(this.x, this.y, this.vx*1.25, this.vy*1.25);
-    entities.push(bullet);
+    entities[bullet.id] = bullet;
   }
   shootTo(targetX, targetY){
     var shootSound = document.getElementById("shootSound");
@@ -88,7 +104,7 @@ class Player extends Entity {
     var vectorY = targetY - this.y;
     var distance = Math.sqrt(((vectorX*vectorX)+(vectorY*vectorY)));
     var bullet = new Bullet(this.x, this.y, vectorX/distance, vectorY/distance);
-    entities.push(bullet);
+    entities[bullet.id] = bullet;
     shootSound.play();
   }
   walk(walkDir, walkOrStop) {
@@ -133,8 +149,8 @@ class Bullet extends Entity {
   }
 }
 
-var player = new Player(50, 50, 0, 0);
-entities.push(player);
+var localPlayer = new Player(50, 50, 0, 0);
+entities[localPlayer.id] = localPlayer;
 
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 function checkKeyEvent(event) {
@@ -144,19 +160,19 @@ function checkKeyEvent(event) {
   var walkOrStop = event.type == 'keydown';
   switch (event.code) {
   case "KeyW": // go north
-    player.walk("N", walkOrStop);
+    localPlayer.walk("N", walkOrStop);
     break;
   case "KeyD": // go east
-    player.walk("E", walkOrStop);
+    localPlayer.walk("E", walkOrStop);
     break;
   case "KeyS": // go south
-    player.walk("S", walkOrStop);
+    localPlayer.walk("S", walkOrStop);
     break;
   case "KeyA": // go west
-    player.walk("W", walkOrStop);
+    localPlayer.walk("W", walkOrStop);
     break;
   case "Space":
-    player.shoot();
+    localPlayer.shoot();
     break;
   }
 }
@@ -164,7 +180,7 @@ function checkKeyEvent(event) {
 function handleClickEvent (event) {
   var targetX = event.clientX;
   var targetY = event.clientY;
-  player.shootTo(targetX, targetY);
+  localPlayer.shootTo(targetX, targetY);
 }
 
 document.addEventListener('keydown', checkKeyEvent);
