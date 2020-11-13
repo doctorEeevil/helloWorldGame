@@ -111,6 +111,8 @@ class Player extends Entity {
   walk(walkDir, walkOrStop) {
     var walkOrStopInt = walkOrStop ? 1 : 0;
     var vscale = 0.5 * walkOrStopInt; // pixels per millisecond
+    var vx = this.vx;
+    var vy = this.vy;
     switch (walkDir) {
     case "N":
       this.vy = -1 * vscale;
@@ -125,15 +127,27 @@ class Player extends Entity {
       this.vx = -1 * vscale;
       break;
     }
-    var vx = this.vx;
-    var vy = this.vy;
-    //    console.log({walkDir, walkOrStop, vx, vy});
+    if (this.vx != vx || this.vy != vy) {
+      this.sendMovementChange();
+    }
+    //console.log({walkDir, walkOrStop, vx, vy});
   }
   draw() {
     twoDee.fillStyle = this.color;
     twoDee.beginPath();
     twoDee.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, 6.28, 0);
     twoDee.fill();
+  }
+  sendMovementChange() {
+    var movementChangeJSON = JSON.stringify({
+      "type": "movementChange",
+      "id": this.id,
+      "vx": this.vx,
+      "vy": this.vy,
+      "x": this.x,
+      "y": this.y
+    });
+    ws.send(movementChangeJSON);
   }
 }
 
