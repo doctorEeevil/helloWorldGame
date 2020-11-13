@@ -37,6 +37,7 @@ class GameServer {
     var player = this.createPlayer(ws);
     player.initPlayer();
     this.toEverybody(player.getStatus());
+    this.meetTheNeighbors(player);
   }
   toEverybody(data) {
     this.players.forEach(function each(player) {
@@ -56,6 +57,11 @@ class GameServer {
   }
   getRandomPlayerColor() {
     return colors[this.players.length % colors.length];
+  }
+  meetTheNeighbors(newPlayer) {
+    this.players.forEach((neighbor) => {
+      newPlayer.ws.send(neighbor.getStatus());
+    })
   }
 }
 
