@@ -14,7 +14,7 @@ class Player {
 			   "type": "playerStatus",
 			   "id": this.id});
   }
-  initializePlayer() {
+  initPlayer() {
     var statusJSON = JSON.stringify({"pos": this.pos,
 				     "color": this.color,
 				     "type": "initPlayer",
@@ -35,6 +35,7 @@ class GameServer {
   }
   connection(ws) {
     var player = this.createPlayer(ws);
+    player.initPlayer();
     this.toEverybody(player.getStatus());
   }
   toEverybody(data) {

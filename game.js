@@ -26,6 +26,7 @@ function handleMessage(messageEvent) {
       if (!aPlayer) {
 	aPlayer = new Player(msg.pos.x, msg.pos.y);
 	aPlayer.id = msg.id;
+	aPlayer.color = msg.color;
 	entities[aPlayer.id] = aPlayer;
       }
     }
