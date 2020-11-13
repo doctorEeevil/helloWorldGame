@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-var colors = 'DodgerBlue DarkOrange ForestGreen RebeccaPurple LightSeaGreen Tomato'.split(' ');
+var colors = 'DodgerBlue DarkOrange OliveDrab MediumPurple LightSeaGreen Tomato'.split(' ');
 class Player {
   constructor(ws, gameServer) {
     this.ws = ws;
@@ -9,16 +9,20 @@ class Player {
     this.id = this.makePlayerID();
   }
   getStatus() {
-    return JSON.stringify({"pos": this.pos,
-			   "color": this.color,
-			   "type": "playerStatus",
-			   "id": this.id});
+    return JSON.stringify({
+      "type": "playerStatus",
+      "id": this.id,
+      "pos": this.pos,
+      "color": this.color
+    });
   }
   initPlayer() {
-    var statusJSON = JSON.stringify({"pos": this.pos,
-				     "color": this.color,
-				     "type": "initPlayer",
-				     "id": this.id});
+    var statusJSON = JSON.stringify({
+      "type": "initPlayer",
+      "id": this.id,
+      "pos": this.pos,
+      "color": this.color
+    });
     this.ws.send(statusJSON);
   }
   makePlayerID() {
