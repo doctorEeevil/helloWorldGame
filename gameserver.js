@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-var colors = 'DodgerBlue DarkOrange OliveDrab MediumPurple LightSeaGreen Tomato'.split(' ');
+var colors = 'OliveDrab DodgerBlue Tomato DarkOrange MediumPurple LightSeaGreen PaleVioletRed'.split(' ');
 class Player {
   constructor(ws, gameServer) {
     this.ws = ws;
