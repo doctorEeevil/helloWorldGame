@@ -3,6 +3,7 @@ var colors = 'OliveDrab DodgerBlue Tomato DarkOrange MediumPurple LightSeaGreen 
 class Player {
   constructor(ws, gameServer) {
     this.ws = ws;
+    ws.player = this;
     this.gameServer = gameServer;
     this.pos = gameServer.getRandomPos();
     this.color = gameServer.getRandomPlayerColor();
@@ -33,7 +34,7 @@ class Player {
 class GameServer {
   constructor(httpServer) {
     this.httpServer = httpServer;
-    this.players  = [];
+    this.players  = {};
     this.wsServer = new WebSocket.Server({ server: httpServer });
     this.wsServer.on('connection', this.connection.bind(this));
   }
@@ -42,17 +43,18 @@ class GameServer {
     player.initPlayer();
     this.toEverybody(player.getStatus());
     this.meetTheNeighbors(player);
+    
   }
   toEverybody(data) {
-    this.players.forEach(function each(player) {
+    for (const player of Object.values(this.players)) {
       if (player.ws.readyState == WebSocket.OPEN) {
 	player.ws.send(data);
       }
-    });
+    }
   }
   createPlayer(ws) {
     var player = new Player(ws, this);
-    this.players.push(player);
+    this.players[player.id] = player;
     return player;
   }
   getRandomPos() {
@@ -60,12 +62,15 @@ class GameServer {
 	    y: Math.floor(Math.random() * 300) + 50};
   }
   getRandomPlayerColor() {
-    return colors[this.players.length % colors.length];
+    return colors[Object.values(this.players).length % colors.length];
   }
   meetTheNeighbors(newPlayer) {
-    this.players.forEach((neighbor) => {
+    for (const neighbor of Object.values(this.players)) {
       newPlayer.ws.send(neighbor.getStatus());
-    })
+    }
+  }
+  disconnectPlayer(player) {
+    
   }
 }
 
