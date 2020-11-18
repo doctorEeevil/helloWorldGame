@@ -29,8 +29,15 @@ class Player {
   makePlayerID() {
     return Date.now();
   }
+  destroy() {
+    this.gameServer.removePlayer(this);
+    /*
+      Avoid a memory leak by removing player from its socket.
+      Remember that player has player.ws but ws has ws.player too! 
+    */
+    delete this.ws['player'];
+  }
 }
-
 class GameServer {
   constructor(httpServer) {
     this.httpServer = httpServer;
@@ -43,7 +50,7 @@ class GameServer {
     player.initPlayer();
     this.toEverybody(player.getStatus());
     this.meetTheNeighbors(player);
-    
+    ws.onclose = player.destroy.bind(player);
   }
   toEverybody(data) {
     for (const player of Object.values(this.players)) {
@@ -69,8 +76,9 @@ class GameServer {
       newPlayer.ws.send(neighbor.getStatus());
     }
   }
-  disconnectPlayer(player) {
-    
+  removePlayer(player) {
+    console.log("a player has disconnected! player id was", player.id);
+    delete this.players[player.id];
   }
 }
 
