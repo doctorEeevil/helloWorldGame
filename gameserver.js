@@ -8,6 +8,8 @@ class Player {
     this.pos = gameServer.getRandomPos();
     this.color = gameServer.getRandomPlayerColor();
     this.id = this.makePlayerID();
+    this.vx = 0;
+    this.vy = 0;
   }
   getStatus() {
     return JSON.stringify({
@@ -15,6 +17,15 @@ class Player {
       "id": this.id,
       "pos": this.pos,
       "color": this.color
+    });
+  }
+  getStatusUpdate() {
+    return JSON.stringify({
+      "type": "playerStatusUpdate",
+      "id": this.id,
+      "pos": this.pos,
+      "vx": this.vx,
+      "vy": this.vy
     });
   }
   initPlayer() {
@@ -37,6 +48,21 @@ class Player {
     */
     delete this.ws['player'];
   }
+  movementChange(msg) {
+    this.pos.x = msg.x;
+    this.pos.y = msg.y;
+    this.vx = msg.vx;
+    this.vy = msg.vy;
+    this.gameServer.announceMovementChange(this);
+  }
+  handleMessage(messageEvent) {
+    var msg = JSON.parse(messageEvent.data);
+    switch (msg.type) {
+    case "movementChange":
+      this.movementChange(msg);
+      break;
+    }
+  }
 }
 class GameServer {
   constructor(httpServer) {
@@ -50,6 +76,7 @@ class GameServer {
     player.initPlayer();
     this.toEverybody(player.getStatus());
     this.meetTheNeighbors(player);
+    ws.onmessage = player.handleMessage.bind(player);
     ws.onclose = player.destroy.bind(player);
   }
   toEverybody(data) {
@@ -79,6 +106,9 @@ class GameServer {
   removePlayer(player) {
     console.log("a player has disconnected! player id was", player.id);
     delete this.players[player.id];
+  }
+  announceMovementChange(player) {
+    this.toEverybody(player.getStatusUpdate());
   }
 }
 

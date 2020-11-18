@@ -31,6 +31,15 @@ function handleMessage(messageEvent) {
       }
     }
     break;
+  case "playerStatusUpdate":
+    if (localPlayer.id != msg.id) {
+      var aPlayer = entities[msg.id];
+      aPlayer.x = msg.pos.x;
+      aPlayer.y = msg.pos.y;
+      aPlayer.vx = msg.vx;
+      aPlayer.vy = msg.vy;
+    }
+    break;
   }
 }
 ws.onmessage = handleMessage;
